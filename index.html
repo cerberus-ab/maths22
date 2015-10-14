@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Maths 22</title>
+    <!-- Stylesheet -->
+    <style type="text/css" name="default">
+        html, body, div, span, object, iframe, p, blockquote, pre, a, em, font, img, ins, small, strong, sub, sup, b, u, i, center, ol, ul, li, fieldset, form, label, legend, table, tbody, th, td {
+            border: 0;
+            outline: 0;
+            font-size: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            height: 100%;
+            width: 100%;
+        }
+        div, input, select, textarea {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box !important;
+            -moz-box-sizing: border-box !important;
+            -webkit-box-sizing: border-box !important;
+        }
+        table {
+            width: 100%;
+            border-spacing: 0;
+        }
+        ul {
+            list-style-type: none;
+        }
+        body {
+            height: 100%;
+            width: 100%;
+            color: #3F3F3F;
+            font: 14px Arial, Helvetica, sans-serif;
+        }
+    </style>
+    <style type="text/css" name="index">
+        body {
+            padding: 20px;
+        }
+    </style>
+    <!-- Javascript main -->
+    <script type="text/javascript">
+        window.answers = [];
+
+        window.onload = function() {
+            Array.prototype.forEach.call(document.getElementById('task-list').getElementsByTagName('li'), function(item) {
+                item.getElementsByClassName('task-answer')[0].innerText = answers[item.getAttribute('data-id') -0];
+            });
+        };
+    </script>
+</head>
+<body>
+    <h1>Вариант 22</h1>
+    <ul id="task-list">
+        <li data-id="0">
+            <!-- Task 1 -->
+            <h2>Задача 1</h2>
+            <div class="task-description">
+                Решение алгебраического уравнения с одним неизвестным.<br />
+                Найти корень уравнения sin(2x+1)-x^2 = 0 с точностью e = 10^-4 в интервале изоляции корня [-0.5;0] методом дихотомии и методом касательных.
+            </div>
+            <div class="task-solution">
+                <span class="task-answer"></span>
+                <script type="text/javascript" name="task-1">
+                    answers.push(function(){
+                        function func(arg) {
+                           return Math.sin(2 * arg + 1) - arg * arg;
+                        }
+                        var beg = -.5, end = 0, eps = 0.0001, max = 1, x0, y0, ic = 0;
+
+                        do {
+                            if (++ic > max) {
+                                throw new RangeError();
+                            }
+                            x0 = (beg + end)/2;
+                            y0 = func(x0);
+                            if (y0 < 0) {
+                                beg = x0;
+                            } else {
+                                end = x0;
+                            }
+                        } while (Math.abs(y0) > eps);
+
+                        return x0.toFixed(4);
+                    }());
+                </script>
+            </div>
+        </li>
+    </ul>
+</body>
+</html>
