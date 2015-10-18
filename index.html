@@ -16,7 +16,7 @@
             height: 100%;
             width: 100%;
         }
-        div, input, select, textarea {
+        body, div, input, select, textarea {
             margin: 0;
             padding: 0;
             box-sizing: border-box !important;
@@ -41,16 +41,30 @@
         body {
             padding: 20px;
         }
+        .task-solution {
+            padding-top: 10px;
+        }
+        .task-answer {
+            color: #FF4500;
+        }
     </style>
     <!-- Javascript main -->
     <script type="text/javascript">
+
+        function getDifferent(func, arg, step) {
+            step = step || .0001;
+            return (func(arg + step) - func(arg - step)) / step / 2;
+        }
+
         window.answers = [];
 
         window.onload = function() {
             Array.prototype.forEach.call(document.getElementById('task-list').getElementsByTagName('li'), function(item) {
-                item.getElementsByClassName('task-answer')[0].innerText = answers[item.getAttribute('data-id') -0];
+                var answer = answers[item.getAttribute('data-id') -0];
+                item.getElementsByClassName('task-answer')[0].innerText = answer instanceof Array ? answer.join(', ') : answer;
             });
         };
+
     </script>
 </head>
 <body>
@@ -64,29 +78,48 @@
                 Найти корень уравнения sin(2x+1)-x^2 = 0 с точностью e = 10^-4 в интервале изоляции корня [-0.5;0] методом дихотомии и методом касательных.
             </div>
             <div class="task-solution">
-                <span class="task-answer"></span>
+                <p>Ответ: <span class="task-answer"></span></p>
                 <script type="text/javascript" name="task-1">
-                    answers.push(function(){
+                    !function() {
+
                         function func(arg) {
-                           return Math.sin(2 * arg + 1) - arg * arg;
+                            return Math.sin(2 * arg + 1) - arg * arg;
                         }
-                        var beg = -.5, end = 0, eps = 0.0001, max = 1, x0, y0, ic = 0;
 
-                        do {
-                            if (++ic > max) {
-                                throw new RangeError();
-                            }
-                            x0 = (beg + end)/2;
-                            y0 = func(x0);
-                            if (y0 < 0) {
-                                beg = x0;
-                            } else {
-                                end = x0;
-                            }
-                        } while (Math.abs(y0) > eps);
+                        function rootMaxDichotomy(func, beg, end, eps) {
+                            var ic = 0, max = 1000, x0, y0;
+                            do {
+                                if (++ic > max) {
+                                    throw new RangeError();
+                                }
+                                x0 = (beg + end)/2;
+                                y0 = func(x0);
+                                if (y0 < 0) {
+                                    beg = x0;
+                                } else {
+                                    end = x0;
+                                }
+                            } while (Math.abs(y0) > eps);
+                            return x0;
+                        }
 
-                        return x0.toFixed(4);
-                    }());
+                        function rootNewton(func, x0, eps) {
+                            var ic = 0, max = 1000, y0;
+                            do {
+                                if (++ic > max) {
+                                    throw new RangeError();
+                                }
+                                x0 = x0 - func(x0) / getDifferent(func, x0);
+                            } while (Math.abs(func(x0)) > eps);
+                            return x0;
+                        }
+
+                        answers.push([
+                            rootMaxDichotomy(func, -.5, 0, .0001).toFixed(4),
+                            rootNewton(func, (-.5 + 0)/2, .0001).toFixed(4)
+                        ]);
+
+                    }();
                 </script>
             </div>
         </li>
